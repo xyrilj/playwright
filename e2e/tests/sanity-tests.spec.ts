@@ -15,11 +15,25 @@
  */
 import { test, expect } from '@playwright/test';
 import { ToDoListHomePage } from '../page-objects/todo-list-page';
+import words from 'random-words';
 
-test('user can add a to do list item', async ({ page }) => {
-  const todoHomePage = new ToDoListHomePage(page);
-  await todoHomePage.goTo();
-  await todoHomePage.addNewToDo('Test task to do');
-  const num = await todoHomePage.getNumberOfTasksLeft();
-  expect(num).toEqual('1');
+test.describe('Sanity Suite', () => {
+  test('user can add a to do list item', async ({ page }) => {
+    const todoHomePage = new ToDoListHomePage(page);
+    todoHomePage.goTo();
+    await todoHomePage.addNewToDo(words({ max: 4, join: ' ' }));
+    const num = await todoHomePage.getNumberOfTasksLeft();
+    expect(num).toEqual('1');
+  });
+
+  test('a new item to the list is added at the bottom', async ({ page }) => {
+    const todoHomePage = new ToDoListHomePage(page);
+    todoHomePage.goTo();
+    const testWords = words({ max: 4, join: ' ' });
+    await todoHomePage.addNewToDo('Task');
+    await todoHomePage.addNewToDo(testWords);
+    expect(await(todoHomePage.getLastTask())).toEqual(testWords);
+  });
 });
+
+

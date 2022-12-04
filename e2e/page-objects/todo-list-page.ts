@@ -25,7 +25,8 @@ export class ToDoListHomePage {
   private readonly toggleAll_css = 'input.toggle-all';
   private readonly toggle_css = 'ul.todo-list input.toggle';
   private readonly remove_css = 'ul.todo-list button.destroy';
-  private readonly listItem_css = 'ul.todo-list label';
+  private readonly listITemLabel_css = 'ul.todo-list label';
+  private readonly listItem_css = 'input.edit';
   private readonly allLink_textual = 'a:text=All';
   private readonly activeLink_textual = 'a:text=Active';
   private readonly completedLink_textual = 'a:text=Completed';
@@ -47,6 +48,8 @@ export class ToDoListHomePage {
     this.homepage = page;
     this.addNew = page.locator(this.addNew_css);
     this.itemCounter = page.locator(this.itemCounter_css);
+    this.toggleAll = page.locator(this.toggleAll_css);
+    this.listItem = page.locator(this.listItem_css);
   }
 
   async goTo() {
@@ -63,5 +66,10 @@ export class ToDoListHomePage {
   async getNumberOfTasksLeft(){
     const num = await(this.itemCounter.innerText());
     return (await num).split(' ')[0];
+  }
+
+  async getLastTask() {
+    const lastItem = await this.listItem.last();
+    return await(lastItem.inputValue());
   }
 }

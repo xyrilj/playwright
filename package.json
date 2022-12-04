@@ -99,5 +99,8 @@
     "ws": "^8.5.0",
     "xml2js": "^0.4.23",
     "yaml": "^1.10.2"
+  },
+  "dependencies": {
+    "random-words": "^1.2.0"
   }
 }
