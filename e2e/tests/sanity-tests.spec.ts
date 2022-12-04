@@ -13,27 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import type { BrowserContext, Page} from '@playwright/test';
 import { test, expect } from '@playwright/test';
 import { ToDoListHomePage } from '../page-objects/todo-list-page';
 import words from 'random-words';
 
-test.describe('Sanity Suite', () => {
-  test('user can add a to do list item', async ({ page }) => {
-    const todoHomePage = new ToDoListHomePage(page);
-    todoHomePage.goTo();
-    await todoHomePage.addNewToDo(words({ max: 4, join: ' ' }));
+test.describe.serial('Sanity Suite', () => {
+  let page: Page;
+  let todoHomePage: ToDoListHomePage;
+  let browserContext: BrowserContext;
+  let lastCreatedTask: string;
+
+  test.beforeAll(async ({ browser }) => {
+    browserContext = await browser.newContext();
+    page = await browserContext.newPage();
+    todoHomePage = new ToDoListHomePage(page);
+    await todoHomePage.goTo();
+    console.log('Reached');
+  });
+
+  test('user can add a to do list item', async ({ }) => {
+    await todoHomePage.addNewToDo(words({ exactly: 3, join: ' ' }));
     const num = await todoHomePage.getNumberOfTasksLeft();
     expect(num).toEqual('1');
   });
 
-  test('a new item to the list is added at the bottom', async ({ page }) => {
-    const todoHomePage = new ToDoListHomePage(page);
-    todoHomePage.goTo();
-    const testWords = words({ max: 4, join: ' ' });
+  test('a item new to the list is added at the bottom', async ({ }) => {
+    lastCreatedTask = words({ exactly: 3, join: ' ' });
     await todoHomePage.addNewToDo('Task');
-    await todoHomePage.addNewToDo(testWords);
-    expect(await(todoHomePage.getLastTask())).toEqual(testWords);
+    await todoHomePage.addNewToDo(lastCreatedTask);
+    expect(await(todoHomePage.getLastTask())).toEqual(lastCreatedTask);
   });
-});
 
+  test('user can update an added item', async ({  }) => {
+    const updatedTaskName = words({ exactly: 3, join: ' ' });
+    await todoHomePage.updateSelectedTask(lastCreatedTask, updatedTaskName);
+    expect(await(todoHomePage.isTaskPresent(lastCreatedTask))).toBeFalsy();
+    expect(await(todoHomePage.isTaskPresent(updatedTaskName))).toBeTruthy();
+  });
+
+  test.afterAll(async () => {
+    await browserContext.close();
+  });
+
+});
 

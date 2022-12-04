@@ -25,8 +25,9 @@ export class ToDoListHomePage {
   private readonly toggleAll_css = 'input.toggle-all';
   private readonly toggle_css = 'ul.todo-list input.toggle';
   private readonly remove_css = 'ul.todo-list button.destroy';
-  private readonly listITemLabel_css = 'ul.todo-list label';
-  private readonly listItem_css = 'input.edit';
+  private readonly listItem_css = 'ul.todo-list li';
+  private readonly listItemInput_css = 'input.edit';
+  private readonly listItemEdit_css = 'li.editing input.edit';
   private readonly allLink_textual = 'a:text=All';
   private readonly activeLink_textual = 'a:text=Active';
   private readonly completedLink_textual = 'a:text=Completed';
@@ -38,7 +39,9 @@ export class ToDoListHomePage {
   private readonly toggleAll: Locator;
   private readonly toggle: Locator;
   private readonly remove: Locator;
+  private readonly listItemInput: Locator;
   private readonly listItem: Locator;
+  private readonly listItemEditing: Locator;
   private readonly allLink: Locator;
   private readonly activeLink: Locator;
   private readonly completedLink: Locator;
@@ -49,7 +52,9 @@ export class ToDoListHomePage {
     this.addNew = page.locator(this.addNew_css);
     this.itemCounter = page.locator(this.itemCounter_css);
     this.toggleAll = page.locator(this.toggleAll_css);
+    this.listItemInput = page.locator(this.listItemInput_css);
     this.listItem = page.locator(this.listItem_css);
+    this.listItemEditing = page.locator(this.listItemEdit_css);
   }
 
   async goTo() {
@@ -69,7 +74,29 @@ export class ToDoListHomePage {
   }
 
   async getLastTask() {
-    const lastItem = await this.listItem.last();
+    const lastItem = await this.listItemInput.last();
     return await(lastItem.inputValue());
+  }
+
+  async updateSelectedTask(beforeTask: string, afterTask: string) {
+    const listItem = await(this.__getListObject(beforeTask));
+    await listItem.click({ clickCount: 2 });
+
+    await this.listItemEditing.clear();
+    await this.listItemEditing.type(afterTask);
+    await this.homepage.keyboard.press('Enter');
+  }
+
+  private async  __getListObject(itemName: string) {
+    return await(this.listItem.getByText(itemName));
+  }
+
+  async isTaskPresent(itemName: string) {
+    const loc = ">> text='" + itemName + "'";
+    const tasks = await this.homepage.$$(this.listItem_css + loc);
+    if (tasks.length > 0)
+      return true;
+    else
+      return false;
   }
 }
