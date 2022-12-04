@@ -30,6 +30,7 @@ export class ToDoListHomePage {
   constructor(page: Page){
     this.homepage = page;
     this.addNew = page.locator(this.addNew_css);
+    this.itemCounter = page.locator(this.itemCounter_css);
   }
 
   async goTo() {
@@ -43,8 +44,8 @@ export class ToDoListHomePage {
     await this.homepage.keyboard.press('Enter');
   }
 
-  async getNumberOfTasksLeft() {
-    this.itemCounter = await this.homepage.locator(this.itemCounter_css);
-    return ((await this.itemCounter.innerText()).split(' ')[0]);
+  async getNumberOfTasksLeft(){
+    const num = await(this.itemCounter.innerText());
+    return (await num).split(' ')[0];
   }
 }

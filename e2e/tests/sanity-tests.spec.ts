@@ -20,5 +20,6 @@ test('user can add a to do list item', async ({ page }) => {
   const todoHomePage = new ToDoListHomePage(page);
   await todoHomePage.goTo();
   await todoHomePage.addNewToDo('Test task to do');
-  await expect(todoHomePage.getNumberOfTasksLeft()).toEqual('1');
+  const num = await todoHomePage.getNumberOfTasksLeft();
+  expect(num).toEqual('1');
 });
