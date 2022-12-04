@@ -22,10 +22,26 @@ export class ToDoListHomePage {
   private readonly page_path = 'https://todomvc.com/examples/react/#/';
   private readonly addNew_css = 'input.new-todo';
   private readonly itemCounter_css = 'footer span.todo-count';
+  private readonly toggleAll_css = 'input.toggle-all';
+  private readonly toggle_css = 'ul.todo-list input.toggle';
+  private readonly remove_css = 'ul.todo-list button.destroy';
+  private readonly listItem_css = 'ul.todo-list label';
+  private readonly allLink_textual = 'a:text=All';
+  private readonly activeLink_textual = 'a:text=Active';
+  private readonly completedLink_textual = 'a:text=Completed';
+  private readonly clearCompleted_css = 'button.clear-completed';
 
   private readonly homepage: Page;
   private readonly addNew: Locator;
-  private itemCounter: Locator;
+  private readonly itemCounter: Locator;
+  private readonly toggleAll: Locator;
+  private readonly toggle: Locator;
+  private readonly remove: Locator;
+  private readonly listItem: Locator;
+  private readonly allLink: Locator;
+  private readonly activeLink: Locator;
+  private readonly completedLink: Locator;
+  private readonly clearCompleted: Locator;
 
   constructor(page: Page){
     this.homepage = page;
