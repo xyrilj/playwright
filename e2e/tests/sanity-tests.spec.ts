@@ -51,6 +51,12 @@ test.describe.serial('Sanity Suite', () => {
     await todoHomePage.updateSelectedTask(lastCreatedTask, updatedTaskName);
     expect(await(todoHomePage.isTaskPresent(lastCreatedTask))).toBeFalsy();
     expect(await(todoHomePage.isTaskPresent(updatedTaskName))).toBeTruthy();
+    lastCreatedTask = updatedTaskName;
+  });
+
+  test('user can delete a task', async ({ }) => {
+    await todoHomePage.removeTask(lastCreatedTask);
+    expect(await(todoHomePage.isTaskPresent(lastCreatedTask))).toBeFalsy();
   });
 
   test.afterAll(async () => {

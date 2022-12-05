@@ -23,8 +23,8 @@ export class ToDoListHomePage {
   private readonly addNew_css = 'input.new-todo';
   private readonly itemCounter_css = 'footer span.todo-count';
   private readonly toggleAll_css = 'input.toggle-all';
-  private readonly toggle_css = 'ul.todo-list input.toggle';
-  private readonly remove_css = 'ul.todo-list button.destroy';
+  private readonly toggle_css = 'input.toggle';
+  private readonly remove_css = 'button.destroy';
   private readonly listItem_css = 'ul.todo-list li';
   private readonly listItemInput_css = 'input.edit';
   private readonly listItemEdit_css = 'li.editing input.edit';
@@ -55,6 +55,7 @@ export class ToDoListHomePage {
     this.listItemInput = page.locator(this.listItemInput_css);
     this.listItem = page.locator(this.listItem_css);
     this.listItemEditing = page.locator(this.listItemEdit_css);
+    this.remove = page.locator(this.remove_css);
   }
 
   async goTo() {
@@ -99,4 +100,13 @@ export class ToDoListHomePage {
     else
       return false;
   }
+
+  async removeTask(itemName: string) {
+    const listItemToRemove = await (this.__getListObject(itemName));
+    await(listItemToRemove.hover());
+    const removeButtonXpath = "//ul/li/div/label[text()='" + itemName + "']/../..//button";
+    const removeButton = await this.homepage.$(removeButtonXpath);
+    removeButton.evaluate((node: HTMLElement) => { node.click(); });
+  }
+
 }
