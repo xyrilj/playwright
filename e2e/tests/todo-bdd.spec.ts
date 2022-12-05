@@ -19,8 +19,7 @@ import { test, expect } from '@playwright/test';
 import { ToDoListHomePage } from '../page-objects/todo-list-page';
 import words from 'random-words';
 
-test.describe('BDD Suite', () => {
-  test.setTimeout(60000);
+test.describe.serial('BDD Suite', () => {
   let page: Page;
   let todoHomePage: ToDoListHomePage;
   let browserContext: BrowserContext;
