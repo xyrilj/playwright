@@ -28,10 +28,11 @@ export class ToDoListHomePage {
   private readonly listItem_css = 'ul.todo-list li';
   private readonly listItemInput_css = 'input.edit';
   private readonly listItemEdit_css = 'li.editing input.edit';
-  private readonly allLink_textual = 'a:text=All';
-  private readonly activeLink_textual = 'a:text=Active';
-  private readonly completedLink_textual = 'a:text=Completed';
+  private readonly allLink_textual = '//a[text()="All"]';
+  private readonly activeLink_textual = '//a[text()="Active"]';
+  private readonly completedLink_textual = '//a[text()="Completed"]';
   private readonly clearCompleted_css = 'button.clear-completed';
+  private readonly listItemByTextContent = '//ul/li//label[text()="__text__"]';
 
   private readonly homepage: Page;
   private readonly addNew: Locator;
@@ -56,6 +57,10 @@ export class ToDoListHomePage {
     this.listItem = page.locator(this.listItem_css);
     this.listItemEditing = page.locator(this.listItemEdit_css);
     this.remove = page.locator(this.remove_css);
+    this.allLink = page.locator(this.allLink_textual);
+    this.activeLink = page.locator(this.activeLink_textual);
+    this.completedLink = page.locator(this.completedLink_textual);
+    this.clearCompleted = page.locator(this.clearCompleted_css);
   }
 
   async goTo() {
@@ -109,4 +114,37 @@ export class ToDoListHomePage {
     removeButton.evaluate((node: HTMLElement) => { node.click(); });
   }
 
+  async toggleItem(itemName: string) {
+    const xpath = await(this.listItemByTextContent.replace('__text__', itemName) + '/preceding-sibling::input');
+    const toggleButton = await this.homepage.locator(xpath);
+    await toggleButton.click({ force: true });
+  }
+
+  async isTextStruckThrough(itemName: string) {
+    const xpath = this.listItemByTextContent.replace('__text__', itemName);
+    const line = await this.homepage.locator(xpath);
+    const fontStyle = await line.evaluate(lbl =>
+      window.getComputedStyle(lbl).textDecorationLine,
+    );
+    if (fontStyle === 'line-through')
+      return true;
+    else
+      return false;
+  }
+
+  async goToAll(){
+    await this.allLink.click();
+  }
+
+  async goToCompleted(){
+    await this.completedLink.click();
+  }
+
+  async goToActive(){
+    await this.activeLink.click();
+  }
+
+  async clickClearCompleted(){
+    await this.clearCompleted.click();
+  }
 }

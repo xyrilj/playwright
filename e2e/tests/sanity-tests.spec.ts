@@ -39,7 +39,7 @@ test.describe.serial('Sanity Suite', () => {
     expect(num).toEqual('1');
   });
 
-  test('a item new to the list is added at the bottom', async ({ }) => {
+  test('a item new to the list is always added at the bottom', async ({ }) => {
     lastCreatedTask = words({ exactly: 3, join: ' ' });
     await todoHomePage.addNewToDo('Task');
     await todoHomePage.addNewToDo(lastCreatedTask);
@@ -57,6 +57,26 @@ test.describe.serial('Sanity Suite', () => {
   test('user can delete a task', async ({ }) => {
     await todoHomePage.removeTask(lastCreatedTask);
     expect(await(todoHomePage.isTaskPresent(lastCreatedTask))).toBeFalsy();
+  });
+
+  test('user can mark an item as complete successfully', async ({ }) => {
+    lastCreatedTask = words({ exactly: 3, join: ' ' });
+    await todoHomePage.addNewToDo(lastCreatedTask);
+    await todoHomePage.toggleItem(lastCreatedTask);
+    expect(await(todoHomePage.isTextStruckThrough(lastCreatedTask))).toBeTruthy();
+    await todoHomePage.goToActive();
+    expect(await(todoHomePage.isTaskPresent(lastCreatedTask))).toBeFalsy();
+  });
+
+  test('user can clear completed list with one click', async ({ }) => {
+    await todoHomePage.clickClearCompleted();
+    await todoHomePage.goToAll();
+    expect(await(todoHomePage.isTaskPresent(lastCreatedTask))).toBeFalsy();
+  });
+
+  test('cleared completed tasks should be visible in the completed tab',async ({ }) => {
+    await todoHomePage.goToCompleted();
+    expect(await(todoHomePage.isTaskPresent(lastCreatedTask))).toBeTruthy();
   });
 
   test.afterAll(async () => {
