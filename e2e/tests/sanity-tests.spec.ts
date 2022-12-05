@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import type { BrowserContext, Page} from '@playwright/test';
+import type { BrowserContext, Page } from '@playwright/test';
 import { test, expect } from '@playwright/test';
 import { ToDoListHomePage } from '../page-objects/todo-list-page';
 import words from 'random-words';

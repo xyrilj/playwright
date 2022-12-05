@@ -86,7 +86,7 @@ export class ToDoListHomePage {
 
   async updateSelectedTask(beforeTask: string, afterTask: string) {
     const listItem = await(this.__getListObject(beforeTask));
-    await listItem.click({ clickCount: 2 });
+    await listItem.dblclick();
 
     await this.listItemEditing.clear();
     await this.listItemEditing.type(afterTask);
@@ -146,5 +146,11 @@ export class ToDoListHomePage {
 
   async clickClearCompleted(){
     await this.clearCompleted.click();
+  }
+
+  async isCheckboxSelectedForTask(itemName: string){
+    const xpath = await(this.listItemByTextContent.replace('__text__', itemName) + '/preceding-sibling::input');
+    const toggleButton = await this.homepage.locator(xpath);
+    return await(toggleButton.isChecked());
   }
 }
