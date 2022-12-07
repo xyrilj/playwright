@@ -19,7 +19,7 @@ import { test, expect } from '@playwright/test';
 import { ToDoListHomePage } from '../page-objects/todo-list-page';
 import words from 'random-words';
 
-test.describe.serial('BDD Suite', () => {
+test.describe('BDD Suite', () => {
   let page: Page;
   let todoHomePage: ToDoListHomePage;
   let browserContext: BrowserContext;
@@ -31,7 +31,7 @@ test.describe.serial('BDD Suite', () => {
     await todoHomePage.goTo();
   });
 
-  test.describe('Test: Add ToDo Item', () => {
+  test.describe.serial('Test: Add ToDo Item', () => {
     const taskName = words({ exactly: 3, join: ' ' });
     test('Given I am a user', async ({ }) => {
       await todoHomePage.goTo();
@@ -46,7 +46,7 @@ test.describe.serial('BDD Suite', () => {
     });
   });
 
-  test.describe('Test: Edit ToDo Item', () => {
+  test.describe.serial('Test: Edit ToDo Item', () => {
     const taskName = words({ exactly: 3, join: ' ' });
     const editedTaskName = words({ exactly: 4, join: ' ' });
     test('Given I have created a todo item', async ({ }) => {
@@ -61,21 +61,23 @@ test.describe.serial('BDD Suite', () => {
     });
   });
 
-  test.describe('Test: Delete ToDo Item', () => {
-    const taskName = words({ exactly: 3, join: ' ' });
+  test.describe.serial('Test: Delete ToDo Item', () => {
+    const taskNameToDelete = words({ exactly: 3, join: ' ' });
+    const taskNameTwo = words({ exactly: 3, join: ' ' });
     test('Given I have created a todo item', async ({ }) => {
-      await todoHomePage.addNewToDo(taskName);
+      await todoHomePage.addNewToDo(taskNameToDelete);
+      await todoHomePage.addNewToDo(taskNameTwo);
     });
     test('When I delete a todo item using the red X', async ({ }) => {
-      await todoHomePage.removeTask(taskName);
+      await todoHomePage.removeTask(taskNameToDelete);
     });
     test('Then the todo item is removed from my todo list',async ({ }) => {
       await todoHomePage.goToAll();
-      expect(await(todoHomePage.isTaskPresent(taskName))).toBeFalsy();
+      expect(await(todoHomePage.isTaskPresent(taskNameToDelete))).toBeFalsy();
     });
   });
 
-  test.describe('Test: Mark ToDo Item as Complete', () => {
+  test.describe.serial('Test: Mark ToDo Item as Complete', () => {
     const taskName = words({ exactly: 3, join: ' ' });
     test('Given I have created a todo item', async ({ }) => {
       await todoHomePage.addNewToDo(taskName);
@@ -91,7 +93,7 @@ test.describe.serial('BDD Suite', () => {
     });
   });
 
-  test.describe('Test: Only Not Completed Tasks show in the active tab', () => {
+  test.describe.serial('Test: Only Not Completed Tasks show in the active tab', () => {
     const taskNameActive = words({ exactly: 3, join: ' ' });
     const taskNameCompleted = words({ exactly: 4, join: ' ' });
     test('Given I have marked a todo item as complete', async ({ }) => {
@@ -108,7 +110,7 @@ test.describe.serial('BDD Suite', () => {
     });
   });
 
-  test.describe('Test: Clear Completed', () => {
+  test.describe.serial('Test: Clear Completed', () => {
     const taskNameActive = words({ exactly: 3, join: ' ' });
     const taskNameCompleted = words({ exactly: 4, join: ' ' });
     test('Given I have marked a todo item as complete', async ({ }) => {
